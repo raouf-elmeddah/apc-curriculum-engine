@@ -14,8 +14,14 @@ import re
 import pathlib
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
-ROOT_DIR = SCRIPT_DIR / "INT1204 - Programmation BT"
-OUTPUT_HTML = ROOT_DIR / "منهاج_البرمجة_التفاعلي_Syllabus.html"
+
+if len(sys.argv) > 1 and pathlib.Path(sys.argv[1]).exists():
+    ROOT_DIR = pathlib.Path(sys.argv[1]).resolve()
+else:
+    detected = [d for d in SCRIPT_DIR.iterdir() if d.is_dir() and ((d / "SEMESTRE_1").exists() or (d / "00_PROGRAMME_GLOBAL").exists())]
+    ROOT_DIR = detected[0] if detected else SCRIPT_DIR
+
+OUTPUT_HTML = ROOT_DIR / "منهاج_التخصص_التفاعلي_Syllabus.html"
 
 def extract_lesson_parts(content):
     parts = re.split(r'^#{1,3}\s*محتوى الدرس.*$', content, maxsplit=1, flags=re.MULTILINE)
@@ -86,8 +92,20 @@ def extract_duree_from_teacher(teacher_text):
     return "4 ساعات (2H نظري / 2H تطبيقي)"
 
 def gather_all_data():
+    spec_name = ROOT_DIR.name
+    struct_file = ROOT_DIR / "00_PROGRAMME_GLOBAL" / "Structure_du_Programme.md"
+    if struct_file.exists():
+        try:
+            lines = struct_file.read_text(encoding="utf-8").splitlines()[:6]
+            for l in lines:
+                if "تخصص" in l:
+                    spec_name = l.replace("#", "").replace("*", "").strip()
+                    break
+        except Exception:
+            pass
+
     data = {
-        "specialty": "تقني في الإعلام الآلي - خيار برمجة (INT1204 - BT)",
+        "specialty": spec_name,
         "semesters": {}
     }
     

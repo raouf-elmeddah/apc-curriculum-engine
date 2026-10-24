@@ -71,15 +71,13 @@ def show_status():
 
 def build_syllabus():
     print("🚀 جاري بناء وتجميع المناهج التفاعلية HTML (Isolated Print Engine)...")
-    builders = [
-        ("INT1204 - Programmation BT", "build_html_syllabus.py"),
-        ("INT04Q - Creation de sites web", "build_html_syllabus_int04q.py")
-    ]
-    for name, script in builders:
-        script_path = SCRIPT_DIR / script
-        if script_path.exists():
-            print(f"\n🔨 تجميع منهاج: {name}...")
-            subprocess.run([sys.executable, str(script_path)])
+    curricula = get_curricula()
+    if not curricula:
+        print("❌ لم يتم العثور على أي مجلدات مناهج لتجميعها!")
+        return
+    for c_dir in curricula:
+        print(f"\n🔨 تجميع منهاج: {c_dir.name}...")
+        subprocess.run([sys.executable, str(SCRIPT_DIR / "build_html_syllabus.py"), str(c_dir)])
     print("\n✅ تم الانتهاء من تجميع المناهج بنجاح!")
 
 def main():
