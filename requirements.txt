@@ -1,0 +1,6 @@
+# APC Curriculum Engine Dependencies
+# Python 3.10+ recommended (Pure Standard Library for core generation)
+
+# Optional dependencies for direct PDF parsing & export
+markdown>=3.5.0
+pypdf>=4.0.0
