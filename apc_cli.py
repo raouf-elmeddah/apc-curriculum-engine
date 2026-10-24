@@ -63,15 +63,6 @@ def build_syllabus():
     else:
         print("❌ حدث خطأ أثناء تجميع المنهاج التفاعلي.")
 
-def enrich_curriculum():
-    print("🚀 جاري إثراء كافة الدروس بالمحتوى التطبيقي والمخبري الشامل...")
-    res = subprocess.run([sys.executable, str(SCRIPT_DIR / "populate_entire_curriculum_rich.py")])
-    if res.returncode == 0:
-        print("✅ تم إثراء الدروس بنجاح!")
-        build_syllabus()
-    else:
-        print("❌ حدث خطأ أثناء إثراء الدروس.")
-
 def main():
     parser = argparse.ArgumentParser(
         description="APC Curriculum Engine - محرك المناهج التكوينية بالمقاربة بالكفاءات",
@@ -80,13 +71,12 @@ def main():
 أمثلة الاستخدام (Examples):
   python apc_cli.py status      # عرض إحصائيات السداسيات والدروس
   python apc_cli.py build       # تجميع المنهاج التفاعلي HTML والطباعة المعزولة
-  python apc_cli.py enrich      # إثراء الدروس بمحتوى نظري وتطبيقي شامل
         """
     )
     
     parser.add_argument(
         "action",
-        choices=["status", "build", "enrich"],
+        choices=["status", "build"],
         nargs="?",
         default="status",
         help="الإجراء المطلوب تنفيذه (افتراضي: status)"
@@ -98,8 +88,6 @@ def main():
         show_status()
     elif args.action == "build":
         build_syllabus()
-    elif args.action == "enrich":
-        enrich_curriculum()
 
 if __name__ == "__main__":
     main()
